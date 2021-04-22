@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.DBWindow.DBController">
+   <children>
+      <AnchorPane prefHeight="612.0" prefWidth="810.0" style="-fx-background-color: gray;">
+         <children>
+            <AnchorPane layoutX="-5.0" layoutY="64.0" prefHeight="548.0" prefWidth="818.0" style="-fx-background-color: white;">
+               <children>
+                  <TableView fx:id="DBTable" layoutX="3.0" layoutY="5.0" prefHeight="474.0" prefWidth="506.0">
+                     <columns>
+                        <TableColumn prefWidth="75.0" text="ID" />
+                        <TableColumn prefWidth="430.4" text="Cod" />
+                     </columns>
+                  </TableView>
+                  <Button fx:id="getData" layoutX="21.0" layoutY="492.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="67.0" text="Get data" />
+               </children>
+            </AnchorPane>
+            <Button fx:id="connectToDataBase" layoutX="265.0" layoutY="14.0" mnemonicParsing="false" text="Connect" />
+            <TextField fx:id="urlField" layoutX="14.0" layoutY="14.0" prefHeight="26.0" prefWidth="239.0" promptText="DataBase name" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
