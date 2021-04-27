@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="Cods" uuid="328f5739-3022-4ca3-9f84-cc33341c5e78">
+    <data-source source="LOCAL" name="Cods" uuid="a28ad1a6-7b85-465a-a3a0-ba2e27b456dc">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:E:\JFX\Cods.sqlite</jdbc-url>
+      <jdbc-url>jdbc:sqlite:E:\JFX\Cods.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
         <library>
