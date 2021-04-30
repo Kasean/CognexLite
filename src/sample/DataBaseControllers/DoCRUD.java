@@ -2,6 +2,7 @@ package sample.DataBaseControllers;
 
 
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -9,6 +10,17 @@ public class DoCRUD {
 
     private static Connection conn;
 
+
+
+    public static void update(){
+        try {
+            Statement statement = conn.createStatement();
+            String query = "INSERT INTO decryptedСodes (ID, Cods) VALUES(";
+
+        }catch (SQLException e){
+            System.err.println(e.getMessage());
+        }
+    }
 
 
 
@@ -40,7 +52,7 @@ public class DoCRUD {
             }
             rs.close();
             statement.close();
-        }catch (Exception e){
+        }catch (SQLException e){
             System.err.println(e.getMessage());
         }
         return data;
