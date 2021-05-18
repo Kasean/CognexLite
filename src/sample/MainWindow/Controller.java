@@ -22,7 +22,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.stage.Stage;
-import sample.Connecting.HTTPRequest;
+
 
 public class Controller {
 
@@ -178,18 +178,18 @@ public class Controller {
 
     @FXML
     void initialize() {
-
-        Image image = null;
-        try {
-            image = new Image(new FileInputStream("E:\\JFX\\Yes.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(200);
-        imageView.setFitWidth(200);
-
-        photoPane.getChildren().add(imageView);
+//        КартинОчка
+//        Image image = null;
+//        try {
+//            image = new Image(new FileInputStream("E:\\JFX\\Yes.png"));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        ImageView imageView = new ImageView(image);
+//        imageView.setFitHeight(200);
+//        imageView.setFitWidth(200);
+//
+//        photoPane.getChildren().add(imageView);
 
         PieChart.Data slice2 = new PieChart.Data("Read", countOfRead);
         PieChart.Data slice1 = new PieChart.Data("Fail", countOfFail);
