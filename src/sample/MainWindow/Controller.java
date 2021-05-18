@@ -1,10 +1,9 @@
 package sample.MainWindow;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,19 +14,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.chart.PieChart;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.stage.Stage;
+import sample.Connecting.HTTPRequest;
 
 public class Controller {
 
-    int clicks = 0, countOfFail = 0, сountOfRead = 0;
-    double percentageOfFailCounter = 0, percentageOfReadCounter = 0;
+    int clicks = 0;
+    double percentageOfFailCounter = 0, percentageOfReadCounter = 0, countOfFail = 0, countOfRead = 0;
 
     int quantityOfLabels;
 
@@ -35,6 +35,11 @@ public class Controller {
 
     Socket socket = new Socket();
 
+
+
+
+    @FXML
+    private PieChart Chart;
 
 
     @FXML
@@ -87,6 +92,9 @@ public class Controller {
 
     @FXML
     private Button openDataBaseWindow;
+
+    @FXML
+    private Button Photo;
 
 
     @FXML
@@ -141,6 +149,9 @@ public class Controller {
     private Label seventeen;
 
     @FXML
+    private AnchorPane photoPane;
+
+    @FXML
     private Label eighteen;
 
     @FXML
@@ -161,9 +172,31 @@ public class Controller {
     @FXML
     private Label twentyFour;
 
+    @FXML
+    private TextArea decriptedCods;
+
 
     @FXML
     void initialize() {
+
+        Image image = null;
+        try {
+            image = new Image(new FileInputStream("E:\\JFX\\Yes.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(200);
+        imageView.setFitWidth(200);
+
+        photoPane.getChildren().add(imageView);
+
+        PieChart.Data slice2 = new PieChart.Data("Read", countOfRead);
+        PieChart.Data slice1 = new PieChart.Data("Fail", countOfFail);
+
+        Chart.getData().add(slice1);
+        Chart.getData().add(slice2);
+        Chart.setStyle("-fx-background-color: gray");
 
         ArrayList<Label> lbl = new ArrayList<>();
 
@@ -204,39 +237,148 @@ public class Controller {
                 "Cognex DM 262q", "Cognex DM 374", "Cognex DM 474");
         Model.setItems(list);
 
+        Photo.setOnAction(actionEvent -> {
+            String actionCommand = "||>IMAGE.SEND\r\n";
+            byte[] getPhoto = actionCommand.getBytes();
+
+            try{
+                socket.getOutputStream().write(getPhoto);
+                BufferedReader reader =  new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                String info = new String();
+
+                for(int i = 0;i < 2;i++){
+                    info += reader.readLine();
+                    info += "\n";
+
+                }
+                System.out.println(info);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
 //Дописать после подключения камеры
         userTrigger.setOnAction(actionEvent -> {
+
+            String actionCommandTrigger = "||>trigger on\r\n";
+
+            byte[] byteActionCommands = actionCommandTrigger.getBytes();
+
+            try {
+                socket.getOutputStream().write(byteActionCommands);
+                BufferedReader reader =  new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                String data = new String();
+
+                int tra = reader.read();
+                System.out.println(tra);
+
+                if(str.equals("Cognex DM 262q")){
+
+                    if(tra == 48){
+
+                        data += reader.readLine();
+                        data += "\n";
+                        decriptedCods.appendText(data);
+                        System.out.println(data);
+
+                        countOfRead++;
+                        String msgAboutRead = "Read: " + countOfRead;
+                        infoAboutRead.setText(msgAboutRead);
+                        lbl.get(0).setStyle("-fx-background-color: green");
+                    }
+
+                    if(tra == 70){
+                        decriptedCods.appendText("FAIL" + "\n");
+
+                        countOfFail++;
+                        String msgAboutFail = "Fail: " + countOfFail;
+                        infoAboutFail.setText(msgAboutFail);
+
+                        lbl.get(0).setStyle("-fx-background-color: red");
+                    }
+
+                }
+
+                if(str.equals("Cognex DM 474")){
+
+                    if(tra == 48){
+                        for (int i = 0;i < quantityOfLabels;i++){
+                            data += reader.readLine();
+                            data += "\n";
+                        }
+
+                        decriptedCods.appendText(data);
+                        System.out.println(data);
+
+                        countOfRead++;
+                        String msgAboutRead = "Read: " + countOfRead;
+                        infoAboutRead.setText(msgAboutRead);
+
+                        for(int i = 0;i < quantityOfLabels; i++){
+                            lbl.get(i).setStyle("-fx-background-color: green");
+                        }
+
+                    }
+                    if(tra == 70){
+                        decriptedCods.appendText("FAIL" + "\n");
+
+                        countOfFail++;
+                        String msgAboutFail = "Fail: " + countOfFail;
+                        infoAboutFail.setText(msgAboutFail);
+
+                        for(int i = 0;i < quantityOfLabels; i++){
+                            lbl.get(i).setStyle("-fx-background-color: red");
+                        }
+                    }
+                }
+
+
+
+
+
+                //reader.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             clicks++;
             String msgAboutTrigger = "Number of trigger: " + clicks;
             countOfTrigger.setText(msgAboutTrigger);
 
-            //Заглушка на считывания кода
 
-            countOfFail++;
-            String msgAboutFail = "Fail: " + countOfFail;
-            infoAboutFail.setText(msgAboutFail);
 
-            //Заглушка на процент считываний
 
-            percentageOfFailCounter = (countOfFail / (countOfFail + сountOfRead)) * 100;
-            String msgAboutPercentageOfFail = "Percentage of fail: " + percentageOfFailCounter;
+            percentageOfReadCounter = (countOfRead / (countOfRead + countOfFail)) * 100;
+            String msgAboutPercentageOfRead = "Percentage of reads: " + percentageOfReadCounter;
+            percentageOfReads.setText(msgAboutPercentageOfRead);
+            percentageOfFailCounter = (countOfFail / (countOfFail + countOfRead) * 100);
+            String msgAboutPercentageOfFail = "Percentage of fails: " + percentageOfFailCounter;
             percentageOfFails.setText(msgAboutPercentageOfFail);
 
-            for(int i = 0;i < quantityOfLabels; i++){
-                lbl.get(i).setStyle("-fx-background-color: red");
-            }
+
         });
 
-        //Дописать после подключения камеры
         tnCamera.setOnAction(actionEvent -> {
-            System.out.println("Tune");
+            System.out.println("TUNE.START");
+            String actionCommand = "||>TUNE.START\r\n";
+            byte[] doTune = actionCommand.getBytes();
+
+            try{
+                socket.getOutputStream().write(doTune);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         });
 
         //Дописать после подключения камеры
         resetAllStatistic.setOnAction(actionEvent -> {
             clicks = 0;
             countOfFail = 0;
-            сountOfRead = 0;
+            countOfRead = 0;
             percentageOfFailCounter = 0;
             percentageOfReadCounter = 0;
 
@@ -250,7 +392,7 @@ public class Controller {
             infoAboutFail.setText(msgAboutFail);
 
             //Обнуление информации о считываниях
-            String msgAboutRead = "Read: " + сountOfRead;
+            String msgAboutRead = "Read: " + countOfRead;
             infoAboutRead.setText(msgAboutRead);
 
             //Обнуление информации о проценте фэйлов
@@ -261,10 +403,30 @@ public class Controller {
             String msgAboutPercentageOfRead = "Percentage of read: 0.0000";
             percentageOfReads.setText(msgAboutPercentageOfRead);
 
+            String resetAllStat = "||>STATISTICS.RESET\r\n";
+
+            byte[] resetAllStats = resetAllStat.getBytes();
+
+            try{
+                socket.getOutputStream().write(resetAllStats);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         });
 
         resetSettings.setOnAction(actionEvent -> {
-            System.out.println("Settings reset");
+            System.out.println("REBOOT");
+
+            String actionCommand = "||>REBOOT\r\n";
+
+            byte[] reboot = actionCommand.getBytes();
+
+            try{
+                socket.getOutputStream().write(reboot);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
         openDataBaseWindow.setOnAction(actionEvent -> {
@@ -290,13 +452,16 @@ public class Controller {
 
         Connect.setOnAction(actionEvent -> {
 
-//            try{
-//                socket.connect(new InetSocketAddress(IP.getText(), 23));
-//                System.out.println("Вы подключились к камере: " + str + " IP: " + IP.getText());
-//
-//            } catch (IOException e) {
-//                System.err.println(e.getMessage());
-//            }
+            try{
+                socket.connect(new InetSocketAddress(IP.getText(), 23));
+                System.out.println("Вы подключились к камере: " + str + " IP: " + IP.getText());
+
+                System.out.println(socket.getInetAddress() + "    " + socket.getPort());
+;
+
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
 
             if (str.equals("Cognex DM 262q")){
                 lbl.get(0).setVisible(true);
