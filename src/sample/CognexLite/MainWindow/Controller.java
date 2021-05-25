@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,12 +26,13 @@ public class Controller {
     int clicks = 0;
     double percentageOfFailCounter = 0, percentageOfReadCounter = 0, countOfFail = 0, countOfRead = 0;
 
-    int quantityOfLabels;
+    int quantityOfLabels, countOfSocket = 0;
 
     String str;
 
-    Socket socket = new Socket();
+    //Socket socket = new Socket();
 
+    ArrayList<Socket> poolOfSocket = new ArrayList<>();
 
 
 
@@ -166,23 +168,15 @@ public class Controller {
     private Label twentyFour;
 
     @FXML
+    private Button DisConnect;
+
+    @FXML
     private TextArea decriptedCods;
 
 
     @FXML
     void initialize() {
-//        КартинОчка
-//        Image image = null;
-//        try {
-//            image = new Image(new FileInputStream("E:\\JFX\\Yes.png"));
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        ImageView imageView = new ImageView(image);
-//        imageView.setFitHeight(200);
-//        imageView.setFitWidth(200);
-//
-//        photoPane.getChildren().add(imageView);
+
 
         Ok.setVisible(false);
 
@@ -228,7 +222,6 @@ public class Controller {
                 "Cognex DM 262q", "Cognex DM 374", "Cognex DM 474");
         Model.setItems(list);
 
-
 //Дописать после подключения камеры
         userTrigger.setOnAction(actionEvent -> {
 
@@ -237,8 +230,8 @@ public class Controller {
             byte[] byteActionCommands = actionCommandTrigger.getBytes();
 
             try {
-                socket.getOutputStream().write(byteActionCommands);
-                BufferedReader reader =  new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                poolOfSocket.get(countOfSocket).getOutputStream().write(byteActionCommands);
+                BufferedReader reader =  new BufferedReader(new InputStreamReader(poolOfSocket.get(countOfSocket).getInputStream()));
                 String data = new String();
 
                 int tra = reader.read();
@@ -328,6 +321,8 @@ public class Controller {
                 }
 
 
+                //write in DB
+
 
 
 
@@ -362,13 +357,39 @@ public class Controller {
 
         });
 
+
+        DisConnect.setOnAction(actionEvent -> {
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("INFORMATION");
+            alert.setHeaderText("Information about disconnect");
+            alert.setContentText("Вы отключились от камеры: " + "\n" +
+                    "NAME: " + str + "\n" +
+                    "IP: " + IP.getText() + "\n" +
+                    "Socket № " + countOfSocket + " closed");
+
+            alert.showAndWait();
+
+            try {
+                poolOfSocket.get(countOfSocket).close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            countOfSocket++;
+
+
+
+        });
+
+
         tnCamera.setOnAction(actionEvent -> {
             System.out.println("TUNE.START");
             String actionCommand = "||>TUNE.START\r\n";
             byte[] doTune = actionCommand.getBytes();
 
             try{
-                socket.getOutputStream().write(doTune);
+                poolOfSocket.get(countOfSocket).getOutputStream().write(doTune);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -408,7 +429,7 @@ public class Controller {
             byte[] resetAllStats = resetAllStat.getBytes();
 
             try{
-                socket.getOutputStream().write(resetAllStats);
+                poolOfSocket.get(countOfSocket).getOutputStream().write(resetAllStats);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -416,17 +437,31 @@ public class Controller {
         });
 
         resetSettings.setOnAction(actionEvent -> {
-            System.out.println("REBOOT");
 
-            String actionCommand = "||>REBOOT\r\n";
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("WARNING!!!");
+            alert.setContentText("Вам придётся перезапустить приложение" + "\n" + "Хотите продолжить?");
 
-            byte[] reboot = actionCommand.getBytes();
+            Optional<ButtonType> result = alert.showAndWait();
 
-            try{
-                socket.getOutputStream().write(reboot);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (result.get() == ButtonType.OK){
+                System.out.println("REBOOT");
+
+                String actionCommand = "||>REBOOT\r\n";
+
+                byte[] reboot = actionCommand.getBytes();
+
+                try{
+                    poolOfSocket.get(countOfSocket).getOutputStream().write(reboot);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+            else {
+                alert.close();
+            }
+
+
         });
 
         openDataBaseWindow.setOnAction(actionEvent -> {
@@ -452,12 +487,23 @@ public class Controller {
 
         Connect.setOnAction(actionEvent -> {
 
-            try{
-                socket.connect(new InetSocketAddress(IP.getText(), 23));
-                System.out.println("Вы подключились к камере: " + str + " IP: " + IP.getText());
+            poolOfSocket.add(countOfSocket, new Socket());;
 
-                System.out.println(socket.getInetAddress() + "    " + socket.getPort());
-;
+            try{
+                poolOfSocket.get(countOfSocket).connect(new InetSocketAddress(IP.getText(), 23));
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("INFORMATION");
+                alert.setHeaderText("Information about connect");
+                alert.setContentText("Вы подключились к камере: " + "\n" +
+                        "NAME: " + str + "\n" +
+                        "IP: " + IP.getText() + "\n" +
+                        "Socket № " + countOfSocket + " opened");
+
+                alert.showAndWait();
+
+                System.out.println("Вы подключились к камере: " + str + " IP: " + IP.getText() +
+                " используя сокет №: " + countOfSocket + " из пула сокетов");
 
             } catch (IOException e) {
                 System.err.println(e.getMessage());

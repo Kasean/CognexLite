@@ -33,9 +33,9 @@
                   <TextArea fx:id="decriptedCods" editable="false" layoutX="14.0" layoutY="14.0" prefHeight="467.0" prefWidth="318.0" promptText="Information about cods:" style="-fx-background-color: black;" />
                   <Label layoutX="341.0" layoutY="13.0" prefHeight="26.0" prefWidth="170.0" text="Select your camera model:" />
                   <Label layoutX="338.0" layoutY="56.0" prefHeight="26.0" prefWidth="102.0" text="Enter Camera Id:" />
-                  <TextField fx:id="IP" layoutX="439.0" layoutY="56.0" promptText="IP" />
+                  <TextField fx:id="IP" layoutX="490.0" layoutY="56.0" promptText="IP" />
                   <ComboBox fx:id="Model" layoutX="490.0" layoutY="13.0" onAction="#Select" prefWidth="150.0" promptText="Model" />
-                  <Button fx:id="Connect" layoutX="407.0" layoutY="99.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="123.0" text="Connect" />
+                  <Button fx:id="Connect" layoutX="492.0" layoutY="90.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="123.0" text="Connect" />
                   <Label fx:id="one" alignment="CENTER" contentDisplay="CENTER" layoutX="339.0" layoutY="309.0" prefHeight="40.0" prefWidth="40.0" style="-fx-border-color: black;" text="1" textAlignment="RIGHT" textOverrun="CENTER_WORD_ELLIPSIS" />
                   <Label fx:id="two" alignment="CENTER" layoutX="383.0" layoutY="309.0" prefHeight="40.0" prefWidth="40.0" style="-fx-border-color: black;" text="2" />
                   <Label fx:id="three" alignment="CENTER" layoutX="427.0" layoutY="309.0" prefHeight="40.0" prefWidth="40.0" style="-fx-border-color: black;" text="3" />
@@ -66,6 +66,7 @@
                   <Button fx:id="Ok" layoutX="469.0" layoutY="173.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="42.0" text="Ok" />
                   <PieChart fx:id="Chart" layoutX="597.0" layoutY="165.0" prefHeight="316.0" prefWidth="398.0" />
                   <Label layoutX="597.0" layoutY="125.0" prefHeight="26.0" prefWidth="102.0" text="Diagram:" />
+                  <Button fx:id="DisConnect" layoutX="781.0" layoutY="13.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="123.0" text="Disconnect" />
                </children>
                <padding>
                   <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
