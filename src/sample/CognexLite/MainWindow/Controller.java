@@ -2,6 +2,7 @@ package sample.CognexLite.MainWindow;
 
 import java.io.*;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -165,6 +166,9 @@ public class Controller {
     private Label twentyThree;
 
     @FXML
+    private CheckBox apparatTrigger;
+
+    @FXML
     private Label twentyFour;
 
     @FXML
@@ -223,6 +227,25 @@ public class Controller {
         Model.setItems(list);
 
 //Дописать после подключения камеры
+
+
+        apparatTrigger.setSelected(false);
+
+        apparatTrigger.setOnAction(actionEvent -> {
+            if(apparatTrigger.isSelected()){
+
+                try {
+                    ServerSocket sok = new ServerSocket();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+
+
+
         userTrigger.setOnAction(actionEvent -> {
 
             String actionCommandTrigger = "||>trigger on\r\n";

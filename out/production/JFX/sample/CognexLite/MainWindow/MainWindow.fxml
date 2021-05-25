@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
@@ -12,8 +13,8 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1280.0" style="-fx-background-color: gray;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.CognexLite.MainWindow.Controller">
    <children>
       <Button fx:id="userTrigger" layoutX="14.0" layoutY="11.0" mnemonicParsing="false" text="Trigger" />
-      <Button fx:id="tnCamera" layoutX="78.0" layoutY="11.0" mnemonicParsing="false" text="Tune" />
-      <Button fx:id="resetSettings" layoutX="129.0" layoutY="11.0" mnemonicParsing="false" text="Reboot" />
+      <Button fx:id="tnCamera" layoutX="243.0" layoutY="11.0" mnemonicParsing="false" text="Tune" />
+      <Button fx:id="resetSettings" layoutX="298.0" layoutY="11.0" mnemonicParsing="false" text="Reboot" />
       <AnchorPane layoutY="45.0" prefHeight="554.0" prefWidth="800.0" style="-fx-background-color: white;">
          <children>
             <Label fx:id="countOfTrigger" layoutX="14.0" layoutY="27.0" prefHeight="18.0" prefWidth="136.0" text="Number of triggers: 0" />
@@ -74,7 +75,8 @@
             </AnchorPane>
          </children>
       </AnchorPane>
-      <Button fx:id="resetAllStatistic" layoutX="192.0" layoutY="11.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="102.0" text="ResetAllStatistic" />
+      <Button fx:id="resetAllStatistic" layoutX="366.0" layoutY="10.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="102.0" text="ResetAllStatistic" />
       <Button fx:id="openDataBaseWindow" layoutX="715.0" layoutY="11.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="70.0" text="DataBase" />
+      <CheckBox fx:id="apparatTrigger" layoutX="85.0" layoutY="15.0" mnemonicParsing="false" text="wait trigger" />
    </children>
 </AnchorPane>
